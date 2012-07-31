@@ -14,23 +14,22 @@ module YAML
     
     # Can I override initialize and call super anyways??
     def initialize argument = nil
-      if argument.nil?
-        super
-      else
-        if argument.is_a? String
-          if File.exist? argument
-            from_file argument
-          else
-            from_yaml argument
-          end
-        else
-          super argument
-        end
-      end
     end
   end
 end
 
 class SymbolMatrix
   include YAML::SymbolMatrix
+  
+  def initialize argument = nil
+    if argument.is_a? String
+      if File.exist? argument
+        from_file argument
+      else
+        from_yaml argument
+      end
+    else
+      merge! argument unless argument.nil?
+    end
+  end
 end
