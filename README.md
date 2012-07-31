@@ -1,29 +1,110 @@
-# Symbolmatrix
+SymbolMatrix
+============
 
-TODO: Write a gem description
+> Strongly inspired in [SymbolTable][symboltable] gem by [Michael Jackson][michael-jackson-home] (thanks a lot!)
 
-## Installation
+**SymbolMatrix** is a simple Ruby Gem that extends `Hash` so that only `Symbol`s can be used as keys. Why? Because it also allows you to query the SymbolMatrix object using the dot syntax and a string key equivalent to the symbol one, making it more Principle of Least Surprise.
 
+The showdown:
+
+```ruby
+h = Hash.new
+h[:a] = 1
+h[:a]       # => 1
+h['a']      # => nil
+h.a         # => NoMethodError: undefined method `a' for {}:Hash
+
+require 'symbolmatrix'
+
+m = SymbolMatrix.new
+m[:a] = 1
+m[:a]       # => 1
+m['a']      # => 1
+m.a         # => 1
+m.b = 2     # => 2
+```
+
+If you are familiar with SymbolTable you may have noticed that, so far, the same functionality is provided in the original gem. SymbolMatrix adds two key features:
+
+1.  **Recursive convertion to SymbolMatrix**
+
+    ```ruby
+    require "symbolmatrix"
+    
+    m = SymbolMatrix.new :quantum => { :nano => "data" }
+
+    m.quatum.nano # => "data"
+    ```
+
+2.  **YAML autoloading**
+    
+    ```ruby
+    require "symbolmatrix"
+    
+    m = SymbolMatrix.new "quantum: of solace"
+    m.quantum   # => "of solace"
+    
+    # Or alternatively
+    m.from_yaml "quantum: of solace"
+    
+    # Provided a file exists "configuration.yaml" with "database_uri: mysql://root@localhost/database"
+    m.from_file "configuration.yaml"
+    m.database_uri  # => "mysql://root@localhost/database"
+    
+    # Or simply
+    m = SymbolMatrix.new "configuration.yaml"
+    ```
+
+[symboltable]: https://github.com/mjijackson/symboltable
+[michael-jackson-home]: http://mjijackson.com/
+
+Further details
+---------------
+
+### Recursive `#to_hash` convertion
+
+SymbolMatrix provides the `#to_hash` method that recursively transforms the matrix into a n-dimentional Hash.
+
+### Disabling the YAML discovery
+
+If for some reason you don't want this class to use YAML, you can just require `symbolmatrix/symbolmatrix` and the YAML functionality will not be loaded.
+
+### Exceptions
+
+Whenever a key is not found in the SymbolMatrix, a custom `SymbolMatrix::KeyNotDefinedException` will be raised. 
+Similarly, if you attempt to use an inconvertible key (inconvertible to `Symbol`) a `SymbolMatrix::InvalidKeyException` will be raised.
+
+Installation
+------------
+
+    gem install symbolmatrix
+
+### Or using Bundler
 Add this line to your application's Gemfile:
 
     gem 'symbolmatrix'
 
 And then execute:
 
-    $ bundle
+    bundle install
 
-Or install it yourself as:
+## Testing
 
-    $ gem install symbolmatrix
+RSpec specs are provided to check functionality.
 
-## Usage
+## License
 
-TODO: Write usage instructions here
+Copyright (C) 2012 Fetcher
 
-## Contributing
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
-1. Fork it
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Added some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.

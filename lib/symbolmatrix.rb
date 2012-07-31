@@ -1,5 +1,2 @@
-require "symbolmatrix/version"
-
-class SymbolMatrix
-  
-end
+require "symbolmatrix/symbolmatrix"
+require "yaml/symbolmatrix"
