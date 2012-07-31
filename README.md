@@ -1,6 +1,8 @@
 SymbolMatrix
 ============
 
+[![Build Status](https://secure.travis-ci.org/Fetcher/symbolmatrix.png)](http://travis-ci.org/Fetcher/symbolmatrix) [![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/Fetcher/symbolmatrix)
+
 > Strongly inspired in [SymbolTable][symboltable] gem by [Michael Jackson][michael-jackson-home] (thanks a lot!)
 
 **SymbolMatrix** is a simple Ruby Gem that extends `Hash` so that only `Symbol`s can be used as keys. Why? Because it also allows you to query the SymbolMatrix object using the dot syntax and a string key equivalent to the symbol one, making it more Principle of Least Surprise.
@@ -21,7 +23,6 @@ m[:a] = 1
 m[:a]       # => 1
 m['a']      # => 1
 m.a         # => 1
-m.b = 2     # => 2
 ```
 
 If you are familiar with SymbolTable you may have noticed that, so far, the same functionality is provided in the original gem. SymbolMatrix adds two key features:
