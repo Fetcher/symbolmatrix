@@ -37,7 +37,7 @@ If you are familiar with SymbolTable you may have noticed that, so far, the same
     m.quatum.nano # => "data"
     ```
 
-2.  **YAML autoloading**
+2.  **JSON/YAML autoloading**
     
     ```ruby
     require "symbolmatrix"
@@ -54,6 +54,14 @@ If you are familiar with SymbolTable you may have noticed that, so far, the same
     
     # Or simply
     m = SymbolMatrix.new "configuration.yaml"
+    ```
+    
+    Since all JSON is valid YAML... yey, it works with JSON too!
+	```ruby
+    require 'symbolmatrix'
+    
+    data = SymbolMatrix.new '{"message":"Awesome"}'
+    data.message # => 'Awesome'
     ```
 
 [symboltable]: https://github.com/mjijackson/symboltable
@@ -88,6 +96,10 @@ Add this line to your application's Gemfile:
 And then execute:
 
     bundle install
+
+## Known issues
+
+- When loading a YAML/JSON document that has an sequence &ndash;array&ndash; as the root item, SymbolMatrix will crash. This is because SymbolMatrix wasn't intended for arrays, just Hashes, and the recursive conversion from Hash to SymbolMatrix is not working with Arrays.
 
 ## Testing
 
