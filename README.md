@@ -101,6 +101,10 @@ And then execute:
 
 - When loading a YAML/JSON document that has an sequence &ndash;array&ndash; as the root item, SymbolMatrix will crash. This is because SymbolMatrix wasn't intended for arrays, just Hashes, and the recursive conversion from Hash to SymbolMatrix is not working with Arrays.
 
+## Future
+
+- Make SymbolMatrix raise a more relevant error when the file does not exist (something along the lines of "There was an error parsing the YAML string, may be it was a file path and the file does not exist?"). It is possible to increase the chances of detecting properly with a really simple regular expression...
+
 ## Testing
 
 RSpec specs are provided to check functionality.
