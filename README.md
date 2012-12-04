@@ -100,6 +100,7 @@ And then execute:
 ## Known issues
 
 - When loading a YAML/JSON document that has an sequence &ndash;array&ndash; as the root item, SymbolMatrix will crash. This is because SymbolMatrix wasn't intended for arrays, just Hashes, and the recursive conversion from Hash to SymbolMatrix is not working with Arrays.
+- Some keys overlap with method names, so can't be used with the dot syntax. For example, `key`.
 
 ## Future
 
