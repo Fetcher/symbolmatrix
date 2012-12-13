@@ -1,4 +1,4 @@
-require "symbolmatrix/symbolmatrix"
+require "plain_symbolmatrix_helper"
 
 describe SymbolMatrix do
 

@@ -1,6 +1,4 @@
-require "symbolmatrix"
-
-require "fast" # For testing easyness
+require 'complete_features_helper'
 
 describe YAML::SymbolMatrix do
   describe "#from_yaml" do

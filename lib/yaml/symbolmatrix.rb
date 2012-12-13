@@ -1,5 +1,3 @@
-require "yaml"
-
 module YAML
   module SymbolMatrix
     # Calls #merge! using the parsed YAML data as argument

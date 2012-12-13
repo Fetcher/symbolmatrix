@@ -1,0 +1,1 @@
+require 'symbolmatrix/symbolmatrix'
