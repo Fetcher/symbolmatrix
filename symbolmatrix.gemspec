@@ -11,9 +11,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency "discoverer"
 
   gem.add_development_dependency "rspec"
-  gem.add_development_dependency "pry"
   gem.add_development_dependency "fast"
-  gem.add_development_dependency "cucumber"
 
   gem.files         = `git ls-files`.split($\)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }

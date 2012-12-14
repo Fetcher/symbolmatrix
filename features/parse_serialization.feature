@@ -11,3 +11,16 @@ Scenario: Quite basic structure
   """
   data: datum
   """
+
+Scenario: Needlessly complicated
+  Given "remote.client.host:fetcher remote.client.path:/ remote.client.port:bridge.fetcher remote.server:8080"
+  When I parse it
+  Then I should see (serialized in yaml)
+  """
+  remote: 
+    client:
+      host: fetcher
+      path: /
+      port: bridge.fetcher
+    server: 8080
+  """

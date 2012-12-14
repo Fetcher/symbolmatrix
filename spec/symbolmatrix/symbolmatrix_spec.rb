@@ -144,4 +144,55 @@ describe SymbolMatrix do
       a.a.should be_instance_of B
     end
   end
+
+  describe "#recursive_merge" do 
+    it 'should merge two symbolmatrices' do 
+      sm = SymbolMatrix.new a: "hola"
+      result = sm.recursive_merge SymbolMatrix.new b: "chau"
+      result.a.should == "hola"
+      result.b.should == "chau"
+    end
+
+    it 'should merge two symbolmatrices (new values)' do 
+      sm = SymbolMatrix.new a: "hey"
+      result = sm.recursive_merge SymbolMatrix.new b: "bye"
+      result.a.should == "hey"
+      result.b.should == "bye"
+    end
+
+    it 'should merge two symbolmatrices (new keys)' do 
+      sm = SymbolMatrix.new y: "allo"
+      result = sm.recursive_merge SymbolMatrix.new z: "ciao"
+      result.y.should == "allo"
+      result.z.should == "ciao"
+    end
+
+    it 'should recursively merge this with that (simple)' do 
+      sm = SymbolMatrix.new another: { b: "aa" }
+      result = sm.recursive_merge SymbolMatrix.new another: { c: "ee" }
+      result.another.b.should == "aa"
+      result.another.c.should == "ee"
+    end
+
+    it 'should recursively merge this with that (simple)' do 
+      sm = SymbolMatrix.new distinct: { b: "rr" }
+      result = sm.recursive_merge SymbolMatrix.new distinct: { c: "gg" }
+      result.distinct.b.should == "rr"
+      result.distinct.c.should == "gg"
+    end
+
+    it 'should recursively merge this with that v2 (simple)' do
+      sm = SymbolMatrix.new a: { z: "ee" }
+      result = sm.recursive_merge SymbolMatrix.new a: { g: "oo" }
+      result.a.z.should == "ee"
+      result.a.g.should == "oo"
+    end
+
+    it 'should recursively merge this with the argument hash' do 
+      sm = SymbolMatrix.new a: { b: { c: "hola" } }
+      result = sm.recursive_merge a: { b: { d: "aaa" } }
+      result.a.b.c.should == "hola"
+      result.a.b.d.should == "aaa"
+    end
+  end
 end

@@ -77,6 +77,23 @@ class SymbolMatrix < Hash
     end
   end
   
+  # Merges this SymbolMatrix with another SymbolMatrix recursively
+  def recursive_merge hash
+    result = SymbolMatrix.new
+    self.keys.each do |key|
+      result[key] = self[key]
+    end
+
+    hash.keys.each do |key|
+      if result.has_key? key
+        result[key] = result[key].recursive_merge hash[key]
+      else
+        result[key] = hash[key]
+      end
+    end
+    return result
+  end
+
   class KeyNotDefinedException < RuntimeError; end
   class InvalidKeyException < RuntimeError; end 
 end

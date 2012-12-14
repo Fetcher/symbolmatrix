@@ -1,3 +1,3 @@
 require "symbolmatrix"
 
-require "fast" # For testing easyness
+require "fast/fast" # For testing easyness
