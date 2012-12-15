@@ -117,9 +117,9 @@ Further details
 
 SymbolMatrix provides the `#to.hash` method that recursively transforms the matrix into a n-dimentional Hash.
 
-### Disabling the YAML discovery
+### Disabling the extras
 
-If for some reason you don't want this class to use YAML, you can just require `symbolmatrix/symbolmatrix` and the YAML functionality will not be loaded.
+If for some reason you don't want this class to use YAML nor the serialization format SMAS, you can just require `symbolmatrix/symbolmatrix` and those functionalities will not be loaded.
 
 ### Exceptions
 
