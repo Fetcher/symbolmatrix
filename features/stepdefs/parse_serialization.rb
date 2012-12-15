@@ -3,7 +3,7 @@ Given /^"(.+?)"$/ do |serialization|
 end
 
 When /^I parse it$/ do 
-  @parsed = SymbolMatrix.new.from.serialization @serialization
+  @parsed = SymbolMatrix.new @serialization
 end
 
 Then /^I should see \(serialized in yaml\)$/ do |data|

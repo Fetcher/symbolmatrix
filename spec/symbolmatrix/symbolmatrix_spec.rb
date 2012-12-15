@@ -1,7 +1,6 @@
 require "plain_symbolmatrix_helper"
 
 describe SymbolMatrix do
-
   describe "#validate_key" do
     context "an not convertible to Symbol key is passed" do
       it "should raise a SymbolMatrix::InvalidKeyException" do
@@ -194,5 +193,11 @@ describe SymbolMatrix do
       result.a.b.c.should == "hola"
       result.a.b.d.should == "aaa"
     end
+  end
+
+  it 'should be a method that calls SymbolMatrix.new with its arguments' do 
+    argument = stub 'argument'
+    SymbolMatrix.should_receive(:new).with argument
+    SymbolMatrix argument
   end
 end

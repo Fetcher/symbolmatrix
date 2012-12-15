@@ -13,6 +13,12 @@ describe SymbolMatrix::Serialization do
         .esto.should == "distinto"
     end
 
+    it 'should parse to a number when is a number' do
+      SymbolMatrix::Serialization
+        .parse("esto:3442")
+        .esto.should == 3442
+    end
+
     it 'should parse a more complex string' do 
       sm = SymbolMatrix::Serialization.parse 'hola:eso que:pensas'
       sm.hola.should == 'eso'
@@ -64,6 +70,40 @@ describe SymbolMatrix::Serialization do
 
       sm.client.host.should == "localhost"
       sm.client.path.should == "hola"
+    end
+  end
+end
+
+describe SymbolMatrix do
+  describe "#initialize" do
+    context "a valid path to a file is provided" do
+      before do 
+        Fast.file.write "temp/data.yaml", "a: { nested: { data: with, very: much }, content: to find }"
+      end
+      
+      it "should load the data into self" do
+        f = SymbolMatrix.new "temp/data.yaml"
+        f.a.nested.data.should == "with"
+      end
+
+      after do
+        Fast.dir.remove! :temp
+      end
+    end
+    
+    context "a YAML string is provided" do
+      it "should load the data into self" do
+        e = SymbolMatrix.new "beta: { nano: { data: with, very: much }, content: to find }"
+        e.beta.nano[:very].should == "much"
+      end
+    end
+
+    context "a SymbolMatrix serialization is provided" do 
+      it 'should load the data into self' do 
+        a = SymbolMatrix.new "those.pesky:attempts of.making.it:work"
+        a.those.pesky.should == "attempts"
+        a.of.making.it.should == "work"
+      end
     end
   end
 end

@@ -97,3 +97,7 @@ class SymbolMatrix < Hash
   class KeyNotDefinedException < RuntimeError; end
   class InvalidKeyException < RuntimeError; end 
 end
+
+def SymbolMatrix *args
+  SymbolMatrix.new *args
+end
