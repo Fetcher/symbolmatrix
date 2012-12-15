@@ -9,6 +9,10 @@ describe Writer::SymbolMatrix do
     end
   end
 
+  describe '#hash' do 
+    it 'should do the same as current #to_hash'
+  end
+
   describe '#serialization' do 
     it 'should serialize "try: this" into "try:this"' do 
       s = SymbolMatrix try: "this"
@@ -101,6 +105,10 @@ describe Writer::SymbolMatrix do
       writer = Writer::SymbolMatrix.new multidimentional
       writer.serialization.should == "hola.the:start hola.asdfdf:8989 hola.of.some:multidimentional stuff:oops"
     end
+  end
+
+  describe '#smas' do 
+    it 'should be an alias for serialization'
   end
 end
 

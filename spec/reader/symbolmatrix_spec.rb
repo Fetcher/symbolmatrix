@@ -49,10 +49,18 @@ describe Reader::SymbolMatrix do
       reader.serialization data_stub
     end
   end
+
+  describe '#smas' do 
+    it 'should be an alias for #serialization'
+  end
 end
 
 describe SymbolMatrix do
   it 'should include the Discoverer for Reader' do 
     SymbolMatrix.ancestors.should include Discoverer::Reader
   end
+
+  it 'should feature a deprecation notice in #from_yaml'
+
+  it 'should feature a deprecation notice in #from_file'
 end
