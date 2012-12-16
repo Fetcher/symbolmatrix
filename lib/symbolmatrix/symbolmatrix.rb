@@ -36,18 +36,9 @@ class SymbolMatrix < Hash
 
   alias []= store  
   
-  # Returns a hashed version of this SymbolMatrix, with all SymbolMatrix objects within recursively 
-  # converted into hashes
-  def to_hash recursive = true
-    the_hash = {}
-    self.each do |key, value|
-      if value.is_a? SymbolMatrix and recursive
-        the_hash[key] = value.to_hash
-      else
-        the_hash[key] = value
-      end
-    end
-    return the_hash
+  # @deprecated Use #to.hash instead
+  def to_hash 
+    Kernel.warn "[DEPRECATION]: #to_hash is deprecated, please use #to.hash instead"
   end
   
   # Merges the passed hash within self

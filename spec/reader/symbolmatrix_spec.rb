@@ -38,7 +38,7 @@ describe Reader::SymbolMatrix do
     end
   end
 
-  describe "#serialization" do 
+  shared_examples_for "any serialization" do 
     it 'should call merge! to source with the parsed data' do 
       the_sm = stub 'sm'
       data_stub = stub 'data'
@@ -46,12 +46,18 @@ describe Reader::SymbolMatrix do
       reader = Reader::SymbolMatrix.new the_sm
       SymbolMatrix::Serialization.should_receive(:parse).with(data_stub).and_return ready_to_merge
       the_sm.should_receive(:merge!).with ready_to_merge
-      reader.serialization data_stub
+      reader.send @method, data_stub
     end
   end
 
+  describe "#serialization" do 
+    before { @method = :serialization }
+    it_behaves_like 'any serialization'
+  end
+
   describe '#smas' do 
-    it 'should be an alias for #serialization'
+    before { @method = :smas }
+    it_behaves_like 'any serialization'
   end
 end
 
@@ -60,7 +66,13 @@ describe SymbolMatrix do
     SymbolMatrix.ancestors.should include Discoverer::Reader
   end
 
-  it 'should feature a deprecation notice in #from_yaml'
+  it 'should feature a deprecation notice in #from_yaml' do
+    Kernel.should_receive(:warn).with "[DEPRECATION]: #from_yaml is deprecated, please use #from.yaml instead" 
+    SymbolMatrix.new.from_yaml stub 'argument'
+  end
 
-  it 'should feature a deprecation notice in #from_file'
+  it 'should feature a deprecation notice in #from_file' do 
+    Kernel.should_receive(:warn).with "[DEPRECATION]: #from_file is deprecated, please use #from.file instead" 
+    SymbolMatrix.new.from_file stub 'argument'
+  end
 end

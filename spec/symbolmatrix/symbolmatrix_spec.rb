@@ -75,34 +75,9 @@ describe SymbolMatrix do
   end
 
   describe "#to_hash" do
-    it "should return an instance of Hash" do
-      m = SymbolMatrix[:b, 1]
-      m.to_hash.should be_instance_of Hash
-    end
-    
-    it "should have the same keys" do
-      m = SymbolMatrix[:a, 1]
-      m.to_hash[:a].should == 1
-    end
-    
-    context "there is some SymbolMatrix within this SymbolMatrix" do
-      it "should recursively call #to_hash in it" do
-        inside = SymbolMatrix.new
-        inside.should_receive :to_hash
-        
-        m = SymbolMatrix[:a, inside]
-        m.to_hash
-      end
-      
-      context "and recursive is set to false" do
-        it "should not call #to_hash on values" do
-          inside = SymbolMatrix.new
-          inside.should_not_receive :to_hash
-          
-          m = SymbolMatrix[:a, inside]
-          m.to_hash false
-        end
-      end
+    it "should show a deprecation notice" do
+      Kernel.should_receive(:warn).with "[DEPRECATION]: #to_hash is deprecated, please use #to.hash instead" 
+      SymbolMatrix.new.to_hash
     end
   end
 

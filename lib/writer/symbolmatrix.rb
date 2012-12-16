@@ -17,6 +17,20 @@ module Writer
       end
       result[1..-1]
     end
+
+    alias :smas :serialization
+
+    def hash
+      the_hash = {}
+      @source.each do |key, value|
+        if value.respond_to? :to
+          the_hash[key] = value.to.hash
+        else
+          the_hash[key] = value
+        end
+      end
+      the_hash
+    end
   end
 end
 
