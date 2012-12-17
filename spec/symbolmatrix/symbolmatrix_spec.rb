@@ -170,6 +170,57 @@ describe SymbolMatrix do
     end
   end
 
+  describe '#recursive_merge!' do 
+    it 'should merge a symbolmatrix into this' do 
+      sm = SymbolMatrix.new a: "hola"
+      sm.recursive_merge! SymbolMatrix.new b: "chau"
+      sm.a.should == "hola"
+      sm.b.should == "chau"
+    end
+
+    it 'should merge two symbolmatrices (new values)' do 
+      sm = SymbolMatrix.new a: "hey"
+      sm.recursive_merge! SymbolMatrix.new b: "bye"
+      sm.a.should == "hey"
+      sm.b.should == "bye"
+    end
+
+    it 'should merge two symbolmatrices (new keys)' do 
+      sm = SymbolMatrix.new y: "allo"
+      sm.recursive_merge! SymbolMatrix.new z: "ciao"
+      sm.y.should == "allo"
+      sm.z.should == "ciao"
+    end
+
+    it 'should recursively merge this with that (simple)' do 
+      sm = SymbolMatrix.new another: { b: "aa" }
+      sm.recursive_merge! SymbolMatrix.new another: { c: "ee" }
+      sm.another.b.should == "aa"
+      sm.another.c.should == "ee"
+    end
+
+    it 'should recursively merge this with that (simple)' do 
+      sm = SymbolMatrix.new distinct: { b: "rr" }
+      sm.recursive_merge! SymbolMatrix.new distinct: { c: "gg" }
+      sm.distinct.b.should == "rr"
+      sm.distinct.c.should == "gg"
+    end
+
+    it 'should recursively merge this with that v2 (simple)' do
+      sm = SymbolMatrix.new a: { z: "ee" }
+      sm.recursive_merge! SymbolMatrix.new a: { g: "oo" }
+      sm.a.z.should == "ee"
+      sm.a.g.should == "oo"
+    end
+
+    it 'should recursively merge this with the argument hash' do 
+      sm = SymbolMatrix.new a: { b: { c: "hola" } }
+      sm.recursive_merge! a: { b: { d: "aaa" } }
+      sm.a.b.c.should == "hola"
+      sm.a.b.d.should == "aaa"
+    end
+  end
+
   it 'should be a method that calls SymbolMatrix.new with its arguments' do 
     argument = stub 'argument'
     SymbolMatrix.should_receive(:new).with argument

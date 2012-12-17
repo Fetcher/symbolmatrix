@@ -85,6 +85,17 @@ class SymbolMatrix < Hash
     return result
   end
 
+  # Merges recursively the passed SymbolMatrix into self
+  def recursive_merge! symbolmatrix
+    symbolmatrix.each do |key, value|
+      if self.has_key? key
+        self[key].recursive_merge! value
+      else 
+        self[key] = value
+      end
+    end
+  end
+
   class KeyNotDefinedException < RuntimeError; end
   class InvalidKeyException < RuntimeError; end 
 end

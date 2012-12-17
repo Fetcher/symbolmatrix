@@ -3,7 +3,7 @@ Given /^the SymbolMatrix:$/ do |yaml|
 end
 
 When /^I serialize it$/ do 
-  @serialization = @symbolmatrix.to.serialization
+  @serialization = @symbolmatrix.to.smas
 end
 
 Then /^I should get "(.+?)"$/ do |serialization|
