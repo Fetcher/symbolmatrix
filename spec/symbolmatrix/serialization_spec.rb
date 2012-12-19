@@ -2,6 +2,11 @@ require 'complete_features_helper'
 
 describe SymbolMatrix::Serialization do
   describe '.parse' do 
+    it 'should parse an empty string' do 
+      sm = SymbolMatrix::Serialization.parse ""
+      sm.keys.should be_empty
+    end
+
     it 'should parse a simple string aja:hola' do
       sm = SymbolMatrix::Serialization.parse 'aja:hola'
       sm.aja.should == 'hola'
@@ -103,6 +108,13 @@ describe SymbolMatrix do
         a = SymbolMatrix.new "those.pesky:attempts of.making.it:work"
         a.those.pesky.should == "attempts"
         a.of.making.it.should == "work"
+      end
+    end
+
+    context "an empty string is provided" do
+      it 'should load nothing into the SymbolMatrix' do 
+        a = SymbolMatrix ""
+        a.keys.should be_empty
       end
     end
   end

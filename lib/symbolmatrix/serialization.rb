@@ -2,6 +2,8 @@ class SymbolMatrix < Hash
   class Serialization
     def self.parse serialization
       result = SymbolMatrix.new
+      return result if serialization.length == 0
+      
       if serialization.include? " "
         serialization.split(" ").each do |command|
           result = result.recursive_merge parse command
