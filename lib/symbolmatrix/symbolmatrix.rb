@@ -69,7 +69,7 @@ class SymbolMatrix < Hash
   end
   
   # Merges this SymbolMatrix with another SymbolMatrix recursively
-  def recursive_merge hash
+  def recursive_merge hash, override = false
     result = SymbolMatrix.new
     self.keys.each do |key|
       result[key] = self[key]
@@ -77,7 +77,15 @@ class SymbolMatrix < Hash
 
     hash.keys.each do |key|
       if result.has_key? key
-        result[key] = result[key].recursive_merge hash[key]
+        if result[key].respond_to? :recursive_merge
+          result[key] = result[key].recursive_merge hash[key], override
+        else
+          if override
+            result[key] = hash[key]
+          else
+            raise MergeError, "The value of the :#{key} key is already defined. Run recursive merge with flag true if you want it to override"
+          end
+        end
       else
         result[key] = hash[key]
       end
@@ -86,10 +94,18 @@ class SymbolMatrix < Hash
   end
 
   # Merges recursively the passed SymbolMatrix into self
-  def recursive_merge! symbolmatrix
+  def recursive_merge! symbolmatrix, override = false
     symbolmatrix.each do |key, value|
       if self.has_key? key
-        self[key].recursive_merge! value
+        if self[key].respond_to? :recursive_merge!
+          self[key].recursive_merge! value, override
+        else
+          if override
+            self[key] = value
+          else
+            raise MergeError, "The value of the :#{key} key is already defined. Run recursive merge with flag true if you want it to override"
+          end
+        end
       else 
         self[key] = value
       end
@@ -98,6 +114,7 @@ class SymbolMatrix < Hash
 
   class KeyNotDefinedException < RuntimeError; end
   class InvalidKeyException < RuntimeError; end 
+  class MergeError < RuntimeError; end 
 end
 
 def SymbolMatrix *args

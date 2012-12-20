@@ -120,6 +120,25 @@ describe SymbolMatrix do
   end
 
   describe "#recursive_merge" do 
+    it 'should raise a relevant error when the two matrices collide' do 
+      sm = SymbolMatrix a: "hola"
+      expect { sm.recursive_merge SymbolMatrix a: "hey"
+      }.to raise_error SymbolMatrix::MergeError,
+        "The value of the :a key is already defined. Run recursive merge with flag true if you want it to override"
+    end
+
+    it 'should override on collide if the override flag is on' do 
+      sm = SymbolMatrix a: "hola"
+      result = sm.recursive_merge SymbolMatrix(a: "hey"), true
+      result.a.should == "hey"
+    end
+
+    it 'should send the override directive into the recursion' do 
+      sm = SymbolMatrix a: { b: "hola" }
+      result = sm.recursive_merge SymbolMatrix( a: { b: "hey" } ), true
+      result.a.b.should == "hey"
+    end
+
     it 'should merge two symbolmatrices' do 
       sm = SymbolMatrix.new a: "hola"
       result = sm.recursive_merge SymbolMatrix.new b: "chau"
@@ -171,6 +190,25 @@ describe SymbolMatrix do
   end
 
   describe '#recursive_merge!' do 
+    it 'should raise a relevant error when the two matrices collide' do 
+      sm = SymbolMatrix a: "hola"
+      expect { sm.recursive_merge! SymbolMatrix a: "hey"
+      }.to raise_error SymbolMatrix::MergeError,
+        "The value of the :a key is already defined. Run recursive merge with flag true if you want it to override"
+    end
+
+    it 'should override on collide if the override flag is on' do 
+      sm = SymbolMatrix a: "hola"
+      sm.recursive_merge! SymbolMatrix(a: "hey"), true
+      sm.a.should == "hey"
+    end
+
+    it 'should send the override directive into the recursion' do 
+      sm = SymbolMatrix a: { b: "hola" }
+      sm.recursive_merge! SymbolMatrix( a: { b: "hey" } ), true
+      sm.a.b.should == "hey"
+    end
+
     it 'should merge a symbolmatrix into this' do 
       sm = SymbolMatrix.new a: "hola"
       sm.recursive_merge! SymbolMatrix.new b: "chau"
