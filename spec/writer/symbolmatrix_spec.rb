@@ -43,7 +43,7 @@ describe Writer::SymbolMatrix do
     end
   end
 
-  shared_examples_for 'any serialization' do 
+  shared_examples_for 'any writer serialization' do 
     it 'should serialize "try: this" into "try:this"' do 
       s = SymbolMatrix try: "this"
       writer = Writer::SymbolMatrix.new s
@@ -139,12 +139,12 @@ describe Writer::SymbolMatrix do
 
   describe '#serialization' do 
     before { @method = :serialization }
-    it_behaves_like 'any serialization'
+    it_behaves_like 'any writer serialization'
   end
 
   describe '#smas' do 
     before { @method = :smas }
-    it_behaves_like 'any serialization'
+    it_behaves_like 'any writer serialization'
   end
 end
 

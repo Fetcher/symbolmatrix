@@ -38,7 +38,7 @@ describe Reader::SymbolMatrix do
     end
   end
 
-  shared_examples_for "any serialization" do 
+  shared_examples_for "any reader serialization" do 
     it 'should call merge! to source with the parsed data' do 
       the_sm = stub 'sm'
       data_stub = stub 'data'
@@ -52,12 +52,12 @@ describe Reader::SymbolMatrix do
 
   describe "#serialization" do 
     before { @method = :serialization }
-    it_behaves_like 'any serialization'
+    it_behaves_like 'any reader serialization'
   end
 
   describe '#smas' do 
     before { @method = :smas }
-    it_behaves_like 'any serialization'
+    it_behaves_like 'any reader serialization'
   end
 end
 
