@@ -1,4 +1,5 @@
 require 'yaml'
+require 'json'
 require 'discoverer'
 
 require 'symbolmatrix/symbolmatrix'

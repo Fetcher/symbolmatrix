@@ -146,6 +146,31 @@ describe Writer::SymbolMatrix do
     before { @method = :smas }
     it_behaves_like 'any writer serialization'
   end
+
+  describe '#json' do
+    it 'should return a json serialization' do 
+      sm = SymbolMatrix alpha: { beta: "gamma" }
+      writer = Writer::SymbolMatrix.new sm
+      writer.json.should == '{"alpha":{"beta":"gamma"}}'
+    end
+  end
+
+  describe '#yaml' do 
+    it 'should return a yaml serialization' do
+      sm = SymbolMatrix alpha: { beta: "gamma" }
+      writer = Writer::SymbolMatrix.new sm
+      writer.yaml.should include "alpha:\n  beta: gamma"
+    end
+  end
+
+  describe '#string_key_hash' do 
+    it 'should convert a SymbolMatrix to a multidimentional hash with all string keys' do 
+      sm = SymbolMatrix alpha: { beta: "gamma" }
+      writer = Writer::SymbolMatrix.new sm
+      writer.string_key_hash
+        .should == { "alpha" => { "beta" => "gamma"} }
+    end
+  end
 end
 
 describe SymbolMatrix do
