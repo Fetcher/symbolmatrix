@@ -265,3 +265,10 @@ describe SymbolMatrix do
     SymbolMatrix argument
   end
 end
+
+describe SymbolMatrix::KeyNotDefinedException do 
+  it 'should be a subclass of NoMethodError' do 
+    SymbolMatrix::KeyNotDefinedException
+      .superclass.should == NoMethodError
+  end
+end

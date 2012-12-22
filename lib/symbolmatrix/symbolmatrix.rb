@@ -112,7 +112,7 @@ class SymbolMatrix < Hash
     end
   end
 
-  class KeyNotDefinedException < RuntimeError; end
+  class KeyNotDefinedException < NoMethodError; end
   class InvalidKeyException < RuntimeError; end 
   class MergeError < RuntimeError; end 
 end
