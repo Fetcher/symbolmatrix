@@ -5,7 +5,7 @@ SymbolMatrix
 
 > Strongly inspired in [SymbolTable][symboltable] gem by [Michael Jackson][michael-jackson-home] (thanks a lot!)
 
-> **New!**: SymbolMatrix now features a serialization syntax from which it can be parsed and to which it can be serialized. I'm calling it SMAS (SymbolMAtris Serialization) and it's loosely inspired in both [rake][rake-link] and [thor][thor-link]'s argument syntax styles. Read more about it in the *SMAS* section downstairs.
+> **New!**: SymbolMatrix now features a serialization syntax from which it can be parsed and to which it can be serialized. I'm calling it SMAS (SymbolMAtrix Serialization) and it's loosely inspired in both [rake][rake-link] and [thor][thor-link]'s argument syntax styles. Read more about it in the *SMAS* section downstairs.
 
 **SymbolMatrix** is a simple Ruby Gem that extends `Hash` so that only `Symbol`s can be used as keys. Why? Because it also allows you to query the SymbolMatrix object using the dot syntax and a string key equivalent to the symbol one, making it more Principle of Least Surprise.
 
