@@ -3,7 +3,7 @@ require "plain_symbolmatrix_helper"
 describe SymbolMatrix do
   describe "#validate_key" do
     context "an not convertible to Symbol key is passed" do
-      it "should raise a SymbolMatrix::InvalidKeyException" do
+      it "raises a SymbolMatrix::InvalidKeyException" do
         m = SymbolMatrix.new
         o = Object.new
         expect { m.validate_key o
@@ -11,29 +11,29 @@ describe SymbolMatrix do
       end
     end
   end
-  
+
   describe "#store" do
     context "a key is stored using a symbol" do
-      it "should be foundable with #[<symbol]" do
+      it "is foundable with #[<symbol]" do
         a = SymbolMatrix.new
         a.store :a, 2
-        a[:a].should == 2
+        expect(a[:a]).to eq 2
       end
     end
-    
+
     context "the passed value is a Hash" do
-      it "should be converted into a SymbolTable" do
+      it "is converted into a SymbolTable" do
         a = SymbolMatrix.new
         a.store :b, { :c => 3 }
-        a[:b].should be_a SymbolMatrix
+        expect(a[:b]).to be_a SymbolMatrix
       end
     end
   end
-  
+
   shared_examples_for "any merging operation" do
-    it "should call :store for every item in the passed Hash" do
+    it "calls :store for every item in the passed Hash" do
       m = SymbolMatrix.new
-      m.should_receive(:store).exactly(3).times
+      expect(m).to receive(:store).exactly(3).times
       m.send @method, { :a => 1, :b => 3, :c => 4 }
     end
   end
@@ -41,234 +41,235 @@ describe SymbolMatrix do
   describe "#merge!" do
     before { @method = :merge! }
     it_behaves_like "any merging operation"
-  end  
-  
+  end
+
   describe "#update" do
     before { @method = :update }
     it_behaves_like "any merging operation"
   end
 
   describe "#merge" do
-    it "should call #validate_key for each passed item" do
+    it "calls #validate_key for each passed item" do
       m = SymbolMatrix.new
-      m.should_receive(:validate_key).exactly(3).times.and_return(true)
+      expect(m).to receive(:validate_key).exactly(3).times.and_return(true)
       m.merge :a => 2, :b => 3, :c => 4
     end
   end
 
   describe "#[]" do
     context "the matrix is empty" do
-      it "should raise a SymbolMatrix::KeyNotDefinedException" do
+      it "raises a SymbolMatrix::KeyNotDefinedException" do
         m = SymbolMatrix.new
         expect { m['t']
         }.to raise_error SymbolMatrix::KeyNotDefinedException, "The key :t is not defined"
       end
     end
-    
+
     context "the matrix has a key defined using a symbol" do
-      it "should return the same value when called with a string" do
+      it "returns the same value when called with a string" do
         m = SymbolMatrix.new
         m[:s] = 3
-        m["s"].should == 3
+        expect(m["s"]).to eq 3
       end
     end
   end
 
   describe "#to_hash" do
-    it "should show a deprecation notice" do
-      Kernel.should_receive(:warn).with "[DEPRECATION]: #to_hash is deprecated, please use #to.hash instead" 
+    it "shows a deprecation notice" do
+      expect(Kernel).to receive(:warn).with "[DEPRECATION]: #to_hash is deprecated, please use #to.hash instead"
       SymbolMatrix.new.to_hash
     end
   end
 
   describe ".new" do
     context "a Hash is passed as argument" do
-      it "should accept it" do
+      it "accepts it" do
         m = SymbolMatrix.new :a => 1
-        m["a"].should == 1
-        m[:a].should == 1
+        expect(m["a"]).to eq 1
+        expect(m[:a]).to eq 1
       end
     end
-  end    
+  end
 
   describe "method_missing" do
-    it "should store in a key named after the method without the '=' sign" do
+    it "stores in a key named after the method without the '=' sign" do
       m = SymbolMatrix.new
       m.a = 4
-      m[:a].should == 4
-    end
-    
-    it "should return the same as the symbol representation of the method" do
-      m = SymbolMatrix.new
-      m.a = 3
-      m[:a].should == 3
-      m["a"].should == 3
-      m.a.should == 3
+      expect(m[:a]).to eq 4
     end
 
-    it "should preserve the class of the argument" do
+    it "returns the same as the symbol representation of the method" do
+      m = SymbolMatrix.new
+      m.a = 3
+      expect(m[:a]).to eq 3
+      expect(m["a"]).to eq 3
+      expect(m.a).to eq 3
+    end
+
+    it "preserves the class of the argument" do
       class A < SymbolMatrix; end
       class B < SymbolMatrix; end
-      
+
       a = A.new
       b = B.new
 
       a.a = b
 
-      a.a.should be_instance_of B
+      expect(a.a).to be_instance_of B
     end
   end
 
-  describe "#recursive_merge" do 
-    it 'should raise a relevant error when the two matrices collide' do 
+  describe "#recursive_merge" do
+    it 'raises a relevant error when the two matrices collide' do
       sm = SymbolMatrix a: "hola"
       expect { sm.recursive_merge SymbolMatrix a: "hey"
       }.to raise_error SymbolMatrix::MergeError,
         "The value of the :a key is already defined. Run recursive merge with flag true if you want it to override"
     end
 
-    it 'should override on collide if the override flag is on' do 
+    it 'overrides on collide if the override flag is on' do
       sm = SymbolMatrix a: "hola"
       result = sm.recursive_merge SymbolMatrix(a: "hey"), true
-      result.a.should == "hey"
+      expect(result.a).to eq "hey"
     end
 
-    it 'should send the override directive into the recursion' do 
+    it 'sends the override directive into the recursion' do
       sm = SymbolMatrix a: { b: "hola" }
       result = sm.recursive_merge SymbolMatrix( a: { b: "hey" } ), true
-      result.a.b.should == "hey"
+      expect(result.a.b).to eq "hey"
     end
 
-    it 'should merge two symbolmatrices' do 
+    it 'merges two symbolmatrices' do
       sm = SymbolMatrix.new a: "hola"
       result = sm.recursive_merge SymbolMatrix.new b: "chau"
-      result.a.should == "hola"
-      result.b.should == "chau"
+      expect(result.a).to eq "hola"
+      expect(result.b).to eq "chau"
     end
 
-    it 'should merge two symbolmatrices (new values)' do 
+    it 'merges two symbolmatrices (new values)' do
       sm = SymbolMatrix.new a: "hey"
       result = sm.recursive_merge SymbolMatrix.new b: "bye"
-      result.a.should == "hey"
-      result.b.should == "bye"
+      expect(result.a).to eq "hey"
+      expect(result.b).to eq "bye"
     end
 
-    it 'should merge two symbolmatrices (new keys)' do 
+    it 'merges two symbolmatrices (new keys)' do
       sm = SymbolMatrix.new y: "allo"
       result = sm.recursive_merge SymbolMatrix.new z: "ciao"
-      result.y.should == "allo"
-      result.z.should == "ciao"
+      expect(result.y).to eq "allo"
+      expect(result.z).to eq "ciao"
     end
 
-    it 'should recursively merge this with that (simple)' do 
+    it 'recursively merges this with that (simple)' do
       sm = SymbolMatrix.new another: { b: "aa" }
       result = sm.recursive_merge SymbolMatrix.new another: { c: "ee" }
-      result.another.b.should == "aa"
-      result.another.c.should == "ee"
+      expect(result.another.b).to eq "aa"
+      expect(result.another.c).to eq "ee"
     end
 
-    it 'should recursively merge this with that (simple)' do 
+    it 'recursively merges this with that (simple)' do
       sm = SymbolMatrix.new distinct: { b: "rr" }
       result = sm.recursive_merge SymbolMatrix.new distinct: { c: "gg" }
-      result.distinct.b.should == "rr"
-      result.distinct.c.should == "gg"
+      expect(result.distinct.b).to eq "rr"
+      expect(result.distinct.c).to eq "gg"
     end
 
-    it 'should recursively merge this with that v2 (simple)' do
+    it 'recursively merges this with that v2 (simple)' do
       sm = SymbolMatrix.new a: { z: "ee" }
       result = sm.recursive_merge SymbolMatrix.new a: { g: "oo" }
-      result.a.z.should == "ee"
-      result.a.g.should == "oo"
+      expect(result.a.z).to eq "ee"
+      expect(result.a.g).to eq "oo"
     end
 
-    it 'should recursively merge this with the argument hash' do 
+    it 'recursively merges this with the argument hash' do
       sm = SymbolMatrix.new a: { b: { c: "hola" } }
       result = sm.recursive_merge a: { b: { d: "aaa" } }
-      result.a.b.c.should == "hola"
-      result.a.b.d.should == "aaa"
+      expect(result.a.b.c).to eq "hola"
+      expect(result.a.b.d).to eq "aaa"
     end
   end
 
-  describe '#recursive_merge!' do 
-    it 'should raise a relevant error when the two matrices collide' do 
+  describe '#recursive_merge!' do
+    it 'raises a relevant error when the two matrices collide' do
       sm = SymbolMatrix a: "hola"
       expect { sm.recursive_merge! SymbolMatrix a: "hey"
       }.to raise_error SymbolMatrix::MergeError,
         "The value of the :a key is already defined. Run recursive merge with flag true if you want it to override"
     end
 
-    it 'should override on collide if the override flag is on' do 
+    it 'overrides on collide if the override flag is on' do
       sm = SymbolMatrix a: "hola"
       sm.recursive_merge! SymbolMatrix(a: "hey"), true
-      sm.a.should == "hey"
+      expect(sm.a).to eq "hey"
     end
 
-    it 'should send the override directive into the recursion' do 
+    it 'sends the override directive into the recursion' do
       sm = SymbolMatrix a: { b: "hola" }
       sm.recursive_merge! SymbolMatrix( a: { b: "hey" } ), true
-      sm.a.b.should == "hey"
+      expect(sm.a.b).to eq "hey"
     end
 
-    it 'should merge a symbolmatrix into this' do 
+    it 'merges a symbolmatrix into this' do
       sm = SymbolMatrix.new a: "hola"
       sm.recursive_merge! SymbolMatrix.new b: "chau"
-      sm.a.should == "hola"
-      sm.b.should == "chau"
+      expect(sm.a).to eq "hola"
+      expect(sm.b).to eq "chau"
     end
 
-    it 'should merge two symbolmatrices (new values)' do 
+    it 'merges two symbolmatrices (new values)' do
       sm = SymbolMatrix.new a: "hey"
       sm.recursive_merge! SymbolMatrix.new b: "bye"
-      sm.a.should == "hey"
-      sm.b.should == "bye"
+      expect(sm.a).to eq "hey"
+      expect(sm.b).to eq "bye"
     end
 
-    it 'should merge two symbolmatrices (new keys)' do 
+    it 'merges two symbolmatrices (new keys)' do
       sm = SymbolMatrix.new y: "allo"
       sm.recursive_merge! SymbolMatrix.new z: "ciao"
-      sm.y.should == "allo"
-      sm.z.should == "ciao"
+      expect(sm.y).to eq "allo"
+      expect(sm.z).to eq "ciao"
     end
 
-    it 'should recursively merge this with that (simple)' do 
+    it 'recursively merges this with that (simple)' do
       sm = SymbolMatrix.new another: { b: "aa" }
       sm.recursive_merge! SymbolMatrix.new another: { c: "ee" }
-      sm.another.b.should == "aa"
-      sm.another.c.should == "ee"
+      expect(sm.another.b).to eq "aa"
+      expect(sm.another.c).to eq "ee"
     end
 
-    it 'should recursively merge this with that (simple)' do 
+    it 'recursively merges this with that (simple)' do
       sm = SymbolMatrix.new distinct: { b: "rr" }
       sm.recursive_merge! SymbolMatrix.new distinct: { c: "gg" }
-      sm.distinct.b.should == "rr"
-      sm.distinct.c.should == "gg"
+      expect(sm.distinct.b).to eq "rr"
+      expect(sm.distinct.c).to eq "gg"
     end
 
-    it 'should recursively merge this with that v2 (simple)' do
+    it 'recursively merges this with that v2 (simple)' do
       sm = SymbolMatrix.new a: { z: "ee" }
       sm.recursive_merge! SymbolMatrix.new a: { g: "oo" }
-      sm.a.z.should == "ee"
-      sm.a.g.should == "oo"
+      expect(sm.a.z).to eq "ee"
+      expect(sm.a.g).to eq "oo"
     end
 
-    it 'should recursively merge this with the argument hash' do 
+    it 'recursively merges this with the argument hash' do
       sm = SymbolMatrix.new a: { b: { c: "hola" } }
       sm.recursive_merge! a: { b: { d: "aaa" } }
-      sm.a.b.c.should == "hola"
-      sm.a.b.d.should == "aaa"
+      expect(sm.a.b.c).to eq "hola"
+      expect(sm.a.b.d).to eq "aaa"
     end
   end
 
-  it 'should be a method that calls SymbolMatrix.new with its arguments' do 
-    argument = stub 'argument'
-    SymbolMatrix.should_receive(:new).with argument
+  it 'is a method that calls SymbolMatrix.new with its arguments' do
+    argument = double 'argument'
+    expect(SymbolMatrix).to receive(:new).with argument
     SymbolMatrix argument
   end
 end
 
-describe SymbolMatrix::KeyNotDefinedException do 
-  it 'should be a subclass of NoMethodError' do 
-    SymbolMatrix::KeyNotDefinedException
-      .superclass.should == NoMethodError
+describe SymbolMatrix::KeyNotDefinedException do
+  it 'is a subclass of NoMethodError' do
+    expect(
+      SymbolMatrix::KeyNotDefinedException.superclass
+    ).to eq NoMethodError
   end
 end
