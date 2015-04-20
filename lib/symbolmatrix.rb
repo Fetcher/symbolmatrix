@@ -1,5 +1,6 @@
 require 'yaml'
 require 'json'
+require 'erb'
 require 'discoverer'
 
 require 'symbolmatrix/symbolmatrix'

@@ -7,11 +7,11 @@ module Reader
     end
 
     def file path
-      @source.merge! YAML.load_file path
+      yaml(File.read(path))
     end
 
     def yaml data
-      @source.merge! YAML.load data
+      @source.merge! YAML.load(ERB.new(data).result)
     end
 
     def serialization data
