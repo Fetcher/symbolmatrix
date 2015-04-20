@@ -10,31 +10,102 @@ describe Reader::SymbolMatrix do
   end
 
   describe "#yaml" do
-    it "calls #merge! the source using the parsed YAML data as argument" do
-      sample_yaml = "a: { nested: { data: with, very: much }, content: to find }"
-      the_stub = double "a theoretical SymbolMatrix"
-      reader = Reader::SymbolMatrix.new the_stub
-      expect(the_stub).to receive(:merge!).with "a" => { "nested" => { "data" => "with", "very" => "much" }, "content" => "to find" }
-      reader.yaml sample_yaml
+    shared_examples_for "parsed YAML" do
+      it "calls #merge! the source using the parsed YAML data as argument" do
+        the_stub = double "a theoretical SymbolMatrix"
+        reader = Reader::SymbolMatrix.new the_stub
+        expect(the_stub).to receive(:merge!).with parsed_hash
+        reader.yaml sample_yaml
+      end
+    end
+
+    context "with YAML" do
+      let(:sample_yaml) { "a: { nested: { data: with, very: much }, content: to find }" }
+      let(:parsed_hash) {
+        {
+          "a" => {
+            "nested" => {
+              "data" => "with",
+              "very" => "much"
+            },
+            "content" => "to find"
+          }
+        }
+      }
+
+      it_behaves_like "parsed YAML"
+    end
+
+    context "with YAML containing ERB" do
+      let(:sample_yaml) { "a: { nested: { data: with, very: much }, content: <%= 'to find' %> }" }
+      let(:parsed_hash) {
+        {
+          "a" => {
+            "nested" => {
+              "data" => "with",
+              "very" => "much"
+            },
+            "content" => "to find"
+          }
+        }
+      }
+
+      it_behaves_like "parsed YAML"
     end
   end
 
   describe "#file" do
-    context "there is a YAML file in the given path" do
-      before do
-        Fast.file.write "temp/data.yaml", "a: { nested: { data: with, very: much }, content: to find }"
+    shared_examples_for "parsed file" do
+      let(:path) { File.join('temp', file) }
+
+      around do |example|
+        Fast.file.write path, yaml
+        example.run
+        Fast.dir.remove! :temp
       end
 
       it "calls #merge! on the source using the parsed YAML data found in the file" do
         the_stub = double "a theoretical SymbolMatrix"
         reader = Reader::SymbolMatrix.new the_stub
-        expect(the_stub).to receive(:merge!).with "a" => { "nested" => { "data" => "with", "very" => "much" }, "content" => "to find" }
-        reader.file "temp/data.yaml"
+        expect(the_stub).to receive(:merge!).with parsed_hash
+        reader.file path
       end
+    end
 
-      after do
-        Fast.dir.remove! :temp
-      end
+    context "there is a YAML file in the given path" do
+      let(:file) { 'data.yaml' }
+      let(:yaml) { "a: { nested: { data: with, very: much }, content: to find }" }
+      let(:parsed_hash) {
+        {
+          "a" => {
+            "nested" => {
+              "data" => "with",
+              "very" => "much"
+            },
+            "content" => "to find"
+          }
+        }
+      }
+
+      it_behaves_like "parsed file"
+    end
+
+    context "there is a YAML file with ERB in the given path" do
+      let(:file) { 'data.yaml' }
+      let(:yaml) { "a: { nested: { data: with, very: much }, content: <%= 'to find' %> }" }
+      let(:parsed_hash) {
+        {
+          "a" => {
+            "nested" => {
+              "data" => "with",
+              "very" => "much"
+            },
+            "content" => "to find"
+          }
+        }
+      }
+
+      it_behaves_like "parsed file"
     end
   end
 
